@@ -1,107 +1,61 @@
 import streamlit as st
 import pandas as pd
 
-tire_brands = {
-    "Premium": [
-        "Bridgestone", "Continental", "Goodyear", "Michelin", "Pirelli"
-    ],
-    "Quality": [
-        "Cooper", "Dunlop", "Falken", "Firestone", "Fulda", "General",
-        "General Tire", "General Tyre", "Hankook", "Kumho", "Maxxis",
-        "Mickey", "Mickey Thompson", "Nexen", "Sumitomo", "Toyo",
-        "Toyo Tires", "Yokohama"
-    ],
-    "Budget 1": [
-        "BF GOODRICH", "CooperTires", "Double Coin", "Federal", "JK",
-        "Lassa", "Matrax", "Otani", "PETLAS", "Roadx", "Roadstone",
-        "SAILUN", "Sava", "Starmax", "Tarazano", "TRAZANO", "Vredestein",
-        "Zeetex"
-    ],
-    "Budget 2": [
-        "Accelera", "Achilles", "Altenzo", "Annaite", "APLUS", "APTANY",
-        "Arivo", "Armstrong", "Arroyo", "Atlas", "Atturo", "Bearway",
-        "Berlin", "BLACK ARROW", "Blackarrow", "Blacklion", "BOTO",
-        "Centara", "CHARMHOO", "Charmo", "Comoro", "compasal", "Davanti",
-        "Dayton", "Deestone", "Doublestar", "Durun", "ETERNITY", "Fortune",
-        "Frztrac", "Galaxia", "Getwin", "GoForm", "Goodride", "Gopro",
-        "GREENLANDER", "Greenmax", "Greentrac", "GRIPMAX", "Groundspeed",
-        "Habilead", "Headway", "HEDOVIC", "HILLO", "HILO", "Honour",
-        "Horizon", "Ilink", "Infinity", "Joyroad", "KAPSEN", "Kenda",
-        "KINFOREST", "LALBIGATOR", "Lancaster", "Landsail", "Landspider",
-        "LANVIGATOR", "Laufenn", "LEAO", "Lexani", "Lexxis", "Longway",
-        "LUISTONE", "Malone", "Marshal", "Massimo", "Maxtrek", "Mileking",
-        "Miletrip", "Minnell", "Montreal", "Mosimo", "NAMA", "NANKANG",
-        "NAVIGATOR", "Neupar", "Opals", "PALLY KING", "PALLYKING", "Pearly",
-        "Prinx", "RIKEN", "Road March", "Roadboss", "Roadcruza", "Roadking",
-        "ROADMARCH", "Roadwing", "Rotalla", "Rovelo", "ROYAL BLAK", "Rydanz",
-        "SAILWIN", "Seam", "Shaheen", "Sonar", "SPORTRAK", "SunFull",
-        "SUNNY", "TBB", "Teraflex", "Tesche", "Thunderer", "TRACKMAX",
-        "TRACMAX", "Transmate", "Vitour", "VIZZONI", "Wanli", "WANLY",
-        "West Lake", "WINDA", "Windforce", "WINRUN", "Zeta", "Zetum",
-        "ZEXTOUR", "Zmax"
-    ]
+# Load the tire brands data and map each brand to its category
+tire_brands_df = pd.read_excel("tire_brands.xlsx")
+brand_to_category = dict(zip(tire_brands_df["Brand"], tire_brands_df["Category"]))
+
+# Load the main DataFrame with categories, sizes, and values
+df = pd.read_excel("brand_segmant.xlsx")
+
+# Load the supplier discount data from Excel and create a dictionary
+discount_df = pd.read_excel("supplier_discount.xlsx")  # Ensure this Excel file contains supplier, discount, brand columns
+supplier_discounts = {
+    (row["supplier"], row["brand"]): row["discount"] for _, row in discount_df.iterrows()
 }
-
-# Flatten the dictionary to map each brand to its category
-brand_to_category = {brand: category for category, brands in tire_brands.items() for brand in brands}
-
-
-# Show the category for the selected brand
-
-# Create a DataFrame with the given data
-data = {
-    "Category": ["Premium", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium",
-                 "Quality", "Quality", "Quality", "Quality", "Quality", "Quality", "Quality", "Quality", "Quality", "Quality", "Quality", "Quality",
-                 "Budget 1", "Budget 1", "Budget 1", "Budget 1", "Budget 1", "Budget 1", "Budget 1", "Budget 1", "Budget 1", "Budget 1", "Budget 1", "Budget 1",
-                 "Budget 2", "Budget 2", "Budget 2", "Budget 2", "Budget 2", "Budget 2", "Budget 2", "Budget 2", "Budget 2", "Budget 2", "Budget 2", "Budget 2"],
-    "helper": ["Premium12", "Premium13", "Premium14", "Premium15", "Premium16", "Premium17", "Premium18", "Premium19", "Premium20", "Premium21", "Premium22", "Premium23",
-               "Quality12", "Quality13", "Quality14", "Quality15", "Quality16", "Quality17", "Quality18", "Quality19", "Quality20", "Quality21", "Quality22", "Quality23",
-               "Budget 112", "Budget 113", "Budget 114", "Budget 115", "Budget 116", "Budget 117", "Budget 118", "Budget 119", "Budget 120", "Budget 121", "Budget 122", "Budget 123",
-               "Budget 212", "Budget 213", "Budget 214", "Budget 215", "Budget 216", "Budget 217", "Budget 218", "Budget 219", "Budget 220", "Budget 221", "Budget 222", "Budget 223"],
-    "Size": [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-             12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-             12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-             12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
-    "Value": [1.15, 1.15, 1.15, 1.15, 1.15, 1.14, 1.14, 1.14, 1.12, 1.1, 1.1, 1.1,
-              1.2, 1.2, 1.2, 1.2, 1.15, 1.16, 1.18, 1.18, 1.18, 1.15, 1.15, 1.15,
-              1.18, 1.18, 1.18, 1.18, 1.15, 1.15, 1.15, 1.15, 1.15, 1.15, 1.15, 1.15,
-              1.23, 1.23, 1.23, 1.23, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2]
-}
-
-df = pd.DataFrame(data)
 
 # Title of the app
 st.title("Final Price Calculator")
 
-# Dropdown input for Category
-
-
-
+# Function to calculate and display the profit value with supplier and brand discount
 def calculate_profit_value(df):
-    # Create a dropdown list for brands
+    # Create a list of unique suppliers from the discount DataFrame
+    unique_suppliers = discount_df["supplier"].unique()
+    selected_supplier = st.selectbox("Choose a Supplier:", unique_suppliers)
+
+    # Dropdown input for Brand
     selected_brand = st.selectbox("Choose a tire brand:", list(brand_to_category.keys()))
 
-    # Dropdown input for Category
-    category = brand_to_category[selected_brand]
+    # Get the category for the selected brand
+    category = brand_to_category.get(selected_brand, None)
 
     # Dropdown input for Size
     size = st.selectbox("Select Size:", df["Size"].unique())
 
-    # Numeric input field for quantity (multiplier)
-    cost_value = st.number_input("Enter Cost :", min_value=1, step=1)
+    # Numeric input field for cost value
+    cost_value = st.number_input("Enter Cost:", min_value=1, step=1)
 
-    # Button to calculate profit value
+    # Button to calculate price
     if st.button("Calculate Price"):
-        # Filter the DataFrame based on selected inputs
+        # Get the discount for the selected supplier and brand
+        discount = supplier_discounts.get((selected_supplier, selected_brand),
+                                          supplier_discounts.get((selected_supplier, "all"), 0))
+
+        # Filter the DataFrame based on selected category and size
         result = df[(df["Category"] == category) & (df["Size"] == size)]
-        
-        # Check if result exists and display profit value
+
+        # Check if result exists and display total price
         if not result.empty:
             profit_value = result["Value"].values[0]
-            total_value = (cost_value+((cost_value*.165)+(cost_value*0.02)+150))*profit_value
-            st.title(f"Total Price For ({cost_value}): {round(total_value+2)}")
+
+            # Calculate the discounted cost after applying supplier and brand discount
+            discounted_cost = cost_value * (1 - discount / 100)
+
+            # Calculate the final price based on discounted cost
+            total_value = (discounted_cost + ((discounted_cost * 0.165) + (discounted_cost * 0.02) + 150)) * profit_value
+            st.title(f"Total Price for ({cost_value}) after {discount}% discount: {round(total_value + 2)}")
         else:
-            st.title("No matching data found.")
+            st.warning("No matching data found for the selected category and size.")
 
 # Call the function
 calculate_profit_value(df)

@@ -1,1 +1,2 @@
-streamlit
+streamlit==1.25.0  # Update to the latest version if available
+pandas==2.1.1      # Update to the latest version if available
