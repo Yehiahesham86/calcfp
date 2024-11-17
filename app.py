@@ -15,7 +15,7 @@ supplier_discounts = {
 }
 
 # Title of the app
-st.title("Final Price Calculator")
+st.title("Price Calculator")
 
 # Function to calculate and display the profit value with supplier and brand discount
 def calculate_profit_value(df):
