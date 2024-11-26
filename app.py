@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 
+# Load the supplier-to-brands mapping
+supplier_brands_df = pd.read_excel("supplier_brands.xlsx")  # Renamed for clarity
+
 # Load the tire brands data and map each brand to its category
 tire_brands_df = pd.read_excel("tire_brands.xlsx")
 brand_to_category = dict(zip(tire_brands_df["Brand"], tire_brands_df["Category"]))
@@ -9,22 +12,30 @@ brand_to_category = dict(zip(tire_brands_df["Brand"], tire_brands_df["Category"]
 df = pd.read_excel("brand_segmant.xlsx")
 
 # Load the supplier discount data from Excel and create a dictionary
-discount_df = pd.read_excel("supplier_discount.xlsx")  # Ensure this Excel file contains supplier, discount, brand columns
+discount_df = pd.read_excel("supplier_discount.xlsx")
 supplier_discounts = {
     (row["supplier"], row["brand"]): row["discount"] for _, row in discount_df.iterrows()
 }
 
 # Title of the app
-st.title("Price Calculator")
+st.title("Final Price Calculator")
 
 # Function to calculate and display the profit value with supplier and brand discount
 def calculate_profit_value(df):
     # Create a list of unique suppliers from the discount DataFrame
-    unique_suppliers = discount_df["supplier"].unique()
+    unique_suppliers = supplier_brands_df["Supplier"].unique()
     selected_supplier = st.selectbox("Choose a Supplier:", unique_suppliers)
 
-    # Dropdown input for Brand
-    selected_brand = st.selectbox("Choose a tire brand:", list(brand_to_category.keys()))
+    # Filter the supplier_brands DataFrame to get brands associated with the selected supplier
+    associated_brands = supplier_brands_df[supplier_brands_df["Supplier"] == selected_supplier]["Brand"].unique()
+
+    # Check if there are any associated brands
+    if len(associated_brands) == 0:
+        st.warning(f"No brands found for the selected supplier: {selected_supplier}")
+        return
+
+    # Dropdown input for Brand (only show brands associated with the selected supplier)
+    selected_brand = st.selectbox("Choose a tire brand:", associated_brands)
 
     # Get the category for the selected brand
     category = brand_to_category.get(selected_brand, None)
