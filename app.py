@@ -12,7 +12,7 @@ brand_to_category = dict(zip(tire_brands_df["Brand"], tire_brands_df["Category"]
 df = pd.read_excel("brand_segmant.xlsx")
 
 # Load the supplier discount data from Excel and create a dictionary
-discount_df = pd.read_excel("supplier_discount.xlsx")
+discount_df = pd.read_excel("supplier_brands.xlsx")
 supplier_discounts = {
     (row["supplier"], row["brand"]): row["discount"] for _, row in discount_df.iterrows()
 }
