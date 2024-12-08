@@ -63,7 +63,11 @@ def calculate_profit_value(df):
             discounted_cost = cost_value * (1 - discount / 100)
             discounted_cost=discounted_cost * 100/114
             # Calculate the final price based on discounted cost
-            total_value = ((discounted_cost + ((discounted_cost *0.06) + 150)) * profit_value)*1.14
+            if (size<=16):
+                fitment_cost=50
+                total_value = ( (discounted_cost * profit_value) +((discounted_cost *0.06) + fitment_cost) )* 1.14
+            else:
+                total_value = ( (discounted_cost * profit_value) +((discounted_cost *0.06) + 100) )* 1.14
             st.title(f"Total Price for ({cost_value}) after {discount}% discount: {round(total_value + 2)} INC VAT")
         else:
             st.warning("No matching data found for the selected category and size.")
