@@ -16,11 +16,13 @@ def calculate_price(df):
     st.header("Final Price Calculator")
     unique_suppliers = supplier_brands_df["Supplier"].unique()
     selected_supplier = st.selectbox("Choose a Supplier:", unique_suppliers)
-
-    associated_brands = supplier_brands_df[supplier_brands_df["Supplier"] == selected_supplier]["Brand"].unique()
-    if len(associated_brands) == 0:
-        st.warning(f"No brands found for the selected supplier: {selected_supplier}")
-        return
+    if selected_supplier=="Tamco":
+        associated_brands=supplier_brands_df["Brand"].unique()
+    else:
+        associated_brands = supplier_brands_df[supplier_brands_df["Supplier"] == selected_supplier]["Brand"].unique()
+        if len(associated_brands) == 0:
+            st.warning(f"No brands found for the selected supplier: {selected_supplier}")
+            return
 
     selected_brand = st.selectbox("Choose a tire brand:", associated_brands)
     category = brand_to_category.get(selected_brand, None)
