@@ -18,6 +18,9 @@ def calculate_price(df):
     selected_supplier = st.selectbox("Choose a Supplier:", unique_suppliers)
     if selected_supplier=="Tamco":
         associated_brands=supplier_brands_df["Brand"].unique()
+        if len(associated_brands) == 0:
+            st.warning(f"No brands found for the selected supplier: {selected_supplier}")
+            return
     else:
         associated_brands = supplier_brands_df[supplier_brands_df["Supplier"] == selected_supplier]["Brand"].unique()
         if len(associated_brands) == 0:
@@ -38,11 +41,10 @@ def calculate_price(df):
             discounted_cost = cost_value * (1 - discount / 100)
             discounted_cost = discounted_cost * 100 / 114
             if size <= 16:
-                fitment_cost = 150
-                total_value = (((discounted_cost * profit_value) +  fitment_cost + 150 ))  + (((((discounted_cost * profit_value) +  fitment_cost + 150)) * 1.14) * 0.04)* 1.14
+                fitment_cost = 50
+                total_value = ((discounted_cost * profit_value) + ((discounted_cost * 0.06) + fitment_cost)) * 1.14
             else:
-                fitment_cost = 150
-                total_value = (((discounted_cost * profit_value) +  fitment_cost + 150 ))  + (((((discounted_cost * profit_value) +  fitment_cost + 150)) * 1.14) * 0.04)* 1.14
+                total_value = ((discounted_cost * profit_value) + ((discounted_cost * 0.06) + 100)) * 1.14
             st.title(f"Total Price: {round(total_value + 2)} INC VAT")
         else:
             st.warning("No matching data found for the selected category and size.")
