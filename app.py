@@ -41,6 +41,7 @@ def calculate_price(df):
                 fitment_cost = 150
                 total_value = (((discounted_cost * profit_value) +  fitment_cost + 150 ))  + (((((discounted_cost * profit_value) +  fitment_cost + 150)) * 1.14) * 0.04)* 1.14
             else:
+                fitment_cost = 150
                 total_value = (((discounted_cost * profit_value) +  fitment_cost + 150 ))  + (((((discounted_cost * profit_value) +  fitment_cost + 150)) * 1.14) * 0.04)* 1.14
             st.title(f"Total Price: {round(total_value + 2)} INC VAT")
         else:
