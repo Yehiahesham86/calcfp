@@ -40,11 +40,8 @@ def calculate_price(df):
             profit_value = result["Value"].values[0]
             discounted_cost = cost_value * (1 - discount / 100)
             discounted_cost = discounted_cost * 100 / 114
-            if size <= 16:
-                fitment_cost = 50
-                total_value = ((discounted_cost * profit_value) + ((discounted_cost * 0.06) + fitment_cost)) * 1.14
-            else:
-                total_value = ((discounted_cost * profit_value) + ((discounted_cost * 0.06) + 100)) * 1.14
+            total_value = ((discounted_cost * profit_value) + 102 + 150) * 1.14 + (((discounted_cost * profit_value) + 102 + 150) * 1.14) * .04
+
             st.title(f"Total Price: {round(total_value + 2)} INC VAT")
         else:
             st.warning("No matching data found for the selected category and size.")
