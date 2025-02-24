@@ -118,7 +118,7 @@ def sku_search(df):
 
 
 def Supplier_Brand_Search(df):
-    st.header("Final Price Calculator")
+    st.header("Brand Search")
 
     # Ensure the DataFrame contains the expected columns
     if "Brand" in df.columns and "Supplier" in df.columns:
